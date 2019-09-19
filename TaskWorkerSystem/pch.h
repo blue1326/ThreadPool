@@ -10,5 +10,18 @@
 #define PCH_H
 
 // TODO: 여기에 미리 컴파일하려는 헤더 추가
+#include <iostream>
+#include <memory>
+#include <bitset>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <tuple>
+#include <functional>
+#include <thread>
+#include <list>
+#include <atomic>
+///forWindows
 
+using namespace std;
 #endif //PCH_H
