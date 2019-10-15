@@ -1,7 +1,7 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "CJopList.h"
 
-
+using namespace ThreadPool;
 CJopList::CJopList()
 {
 	m_Funclist = make_shared<list<function<void()>>>();

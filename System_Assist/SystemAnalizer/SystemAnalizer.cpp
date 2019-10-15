@@ -1,8 +1,8 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SystemAnalizer.h"
 
 
-
+using namespace SystemSpec;
 SystemAnalizer::SystemAnalizer(UNIT _unit)
 	:m_unit(_unit)
 	,byteDiv(1)

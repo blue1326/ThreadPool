@@ -1,9 +1,10 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "CThreadHolder.h"
 //#include "CWorker.h"
 //////////////////////////////////////////////////////////////////////////
 //AKA ThreadPool
 //////////////////////////////////////////////////////////////////////////
+using namespace ThreadPool;
 
 CThreadHolder::CThreadHolder(size_t _numWorkers)
 	: StateFlag(CUSTOM),
@@ -23,14 +24,7 @@ CThreadHolder::CThreadHolder()
 
 CThreadHolder::~CThreadHolder()
 {
-	/*for (const auto &worker : m_WorkerList)
-	{
-		worker->ExitFunc();
-	}
-	for (const auto &worker : m_IndependentWorkerList)
-	{
-		worker->ExitFunc();
-	}*/
+
 }
 
 
@@ -40,6 +34,7 @@ void CThreadHolder::Initialize()
 	m_MainMtx = make_shared<mutex>();
 	m_MainCv = make_shared<condition_variable>();
 	m_JobList[JOB_MAIN] = make_shared<CJopList>();
+		
 	if ((StateFlag&AUTO) == AUTO)
 	{
 		m_NumWorkers = (m_MA->GetSystemInfo()->dwNumberOfProcessors * 2) + 1;
@@ -73,6 +68,22 @@ void CThreadHolder::Deactivate()
 	StateFlag ^= IS_ON;
 }
 
+void CThreadHolder::Awake_all()
+{
+	m_MainCv->notify_all();
+	cout << "all threads awaken" << endl;
+}
+
+void CThreadHolder::Awake(int _awakeCnt)
+{
+	for (int i = 0; i < _awakeCnt; i++)
+	{
+		m_MainCv->notify_one();
+	}
+	cout << "total " << _awakeCnt << " Awaken" << endl;
+	//testcode
+}
+
 void CThreadHolder::SetIndependentWorkers(unsigned int _NumWorkers)
 {
 	WORKERLIST::iterator iter = m_WorkerList.begin();
@@ -98,6 +109,31 @@ void CThreadHolder::SetIndependentWorkers(unsigned int _NumWorkers)
 		{
 			break;
 		}
+	}
+}
+
+void CThreadHolder::SetJob(JOBLISTFLAG targetJlist, function<void()> _func)
+{
+	if (m_JobList[targetJlist] == nullptr)
+	{
+		cout << "Joblist is not allocate" << endl;
+		return;
+	}
+	m_JobList[targetJlist]->Enqueue(_func);
+}
+
+void CThreadHolder::SetAwakeMode(AWAKEMODE _mode)
+{
+	switch (_mode)
+	{
+	case CThreadHolder::AWAKE_PASSIVE:
+		StateFlag |= AWAKE;
+		break;
+	case CThreadHolder::AWAKE_AUTO:
+		StateFlag ^= AWAKE;
+		break;
+	default:
+		break;
 	}
 }
 
