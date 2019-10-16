@@ -71,12 +71,7 @@ void SystemAnalizer::PrintMemorySpecs()
 
 	_tprintf(TEXT("There are %*I64d free  KB of extended memory.\n"),
 		7, m_MemStat.ullAvailExtendedVirtual / byteDiv);
-	/*cout << "TotalPhysicalMemorySize(BYTE) : " << m_MemStat.ullTotalPhys << endl;
-	cout << "TotalPhysicalMemorySize : " << m_MemStat.ullTotalPhys / byteDiv << endl;
-	cout << "AvailPhysicalMemorySize : " << m_MemStat.ullAvailPhys / byteDiv << endl;
-	cout << "TotalVirtualMemorySize : " << m_MemStat.ullTotalVirtual / byteDiv << endl;
-	cout << "AvailVirtualMemorySize : " << m_MemStat.ullAvailVirtual / byteDiv << endl;
-	cout << "UsagePersentage : " << m_MemStat.dwMemoryLoad << endl;*/
+
 }
 
 void SystemAnalizer::PrintSystemSpecs()

@@ -74,9 +74,6 @@ void CWorker::BasicWorking()
 			}
 			m_uLock->unlock();
 		}
-		
-		//system("CLS");
-		//cout << "Running..." << endl;
 
 		//m_atmI_ActiveCount->fetch_add(1);
 		if (m_Job != nullptr)
