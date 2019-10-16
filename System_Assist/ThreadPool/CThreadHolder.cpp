@@ -53,19 +53,9 @@ void CThreadHolder::Initialize()
 
 	}
 
-	Activate();
+	
 }
 
-
-void CThreadHolder::Activate()
-{
-	StateFlag |= IS_ON;
-}
-
-void CThreadHolder::Deactivate()
-{
-	StateFlag ^= IS_ON;
-}
 
 void CThreadHolder::Awake_all()
 {

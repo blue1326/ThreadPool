@@ -28,8 +28,7 @@ namespace ThreadPool
 		};
 	private:
 		void Initialize();
-		void Activate();
-		void Deactivate();
+		
 	public:
 		void Awake_all();
 		void Awake_all_Indep();
@@ -68,15 +67,6 @@ namespace ThreadPool
 		{
 			CUSTOM = 0, //Custosize
 			AUTO = 1, //Autosize
-			INDEPENDENT = 2, //use independent threads;
-			STATE3 = 4,
-			STATE4 = 8,
-			STATE5 = 16,
-			STATE6 = 32,
-			STATE7 = 64,
-			STATE8 = 128,
-			IS_ON = 256,
-			FULLSTATE = INDEPENDENT | STATE3 | STATE4 | STATE5 | STATE6 | STATE7 | STATE8 | IS_ON
 		};
 
 	private:
