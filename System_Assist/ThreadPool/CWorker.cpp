@@ -8,32 +8,30 @@ CWorker::CWorker()
 {
 	m_WorkerThread = nullptr;
 	m_Job = nullptr;
-	//m_wk_funcList.reset();
 	m_Joblist = nullptr;
+	m_mode = AUTOAWAKE;
 }
 
 
 CWorker::~CWorker()
 {
-	//m_wk_funcList.reset();
 	m_Job = nullptr;
 	isRunning = false;
 	m_WorkerThread->join();
-	//int x = 0;
 }
 
-void CWorker::ExitFunc()
-{
-	//isRunning = false;
-}
+
 
 void CWorker::initialize()
 {
 	isRunning = false;
 	if (m_WorkerThread != nullptr)
 		m_WorkerThread->join();
+	
+	m_uLock.reset();
 	m_cv.reset();
 	m_mtx.reset();
+	
 }
 
 
@@ -42,9 +40,7 @@ void CWorker::Activate()
 	isRunning = true;
 	m_uLock = make_shared<unique_lock<mutex>>(*(m_mtx.get()),std::defer_lock);
 
-	//m_uLock = shared_ptr<unique_lock<mutex>>(new unique_lock<mutex>(*m_mtx.get()));
 	m_WorkerThread = unique_ptr<thread>(new thread([this]() {this->BasicWorking(); }));
-	//m_WorkerThread = unique_ptr<thread>(new thread(BasicWorking))
 	
 }
 
@@ -58,11 +54,6 @@ void CWorker::SetMutex(shared_ptr <mutex> _mtx)
 	m_mtx = _mtx;
 }
 
-//void CWorker::SetJob(function<void()>& _job)
-//{
-//
-//}
-
 void CWorker::SetJobList(shared_ptr<CJopList> _joblist)
 {
 	m_Joblist = _joblist;
@@ -74,24 +65,15 @@ void CWorker::BasicWorking()
 	{
 		if (m_mtx != nullptr)
 		{
-			//unique_lock<mutex> lock(*m_mtx.get());
-			//unique_lock<mutex> lock(*m_mtx.get(), std::defer_lock);
-			//m_uLock
-			//lock.try_lock();
+			
 			m_uLock->lock();
-			//m_mtx->lock();
 
 			if (m_Joblist != nullptr && !m_Joblist->Empty())
 			{
 				m_Job = m_Joblist->GetJobAndDequeue();
 			}
-			//m_mtx->unlock();
 			m_uLock->unlock();
-			//lock.unlock();
 		}
-	//	unique_lock<mutex> lock(*m_mtx.get());
-		//m_cv->wait(lock, [this]() {return m_Job})
-		
 		
 		//system("CLS");
 		//cout << "Running..." << endl;
@@ -105,7 +87,20 @@ void CWorker::BasicWorking()
 		if (m_Joblist->Empty())
 		{
 			m_uLock->lock();
-			m_cv->wait(*m_uLock.get());
+			switch (m_mode)
+			{
+			case ThreadPool::CWorker::PASSIVERUNNING:
+				break;
+			case ThreadPool::CWorker::AUTOAWAKE:
+				m_cv->wait(*m_uLock.get(), [this]() {return this->m_Joblist->Empty(); });
+				break;
+			case ThreadPool::CWorker::MANUALAWAKE:
+				m_cv->wait(*m_uLock.get());
+				break;
+			default:
+				break;
+			}
+			//m_cv->wait(*m_uLock.get());
 			m_uLock->unlock();
 		}
 		//m_atmI_ActiveCount->fetch_sub(1);
@@ -124,11 +119,6 @@ void CWorker::SetJobQueue()
 
 }
 
-void CWorker::SetUniqueLock(shared_ptr < unique_lock<mutex>> _ulock)
-{
-	m_uLock = _ulock;
-}
-
 bool CWorker::WorkingOn()
 {
 	if (m_Job == nullptr)
@@ -140,3 +130,9 @@ bool CWorker::WorkingOn()
 		return true;
 	}
 }
+
+void ThreadPool::CWorker::SetAwakeMode(AWAKEMODE _mode)
+{
+	m_mode = _mode;
+}
+

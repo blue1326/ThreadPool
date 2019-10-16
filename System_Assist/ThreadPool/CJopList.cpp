@@ -5,6 +5,7 @@ using namespace ThreadPool;
 CJopList::CJopList()
 {
 	m_Funclist = make_shared<list<function<void()>>>();
+	
 }
 
 
@@ -24,6 +25,8 @@ void CJopList::EnqueuePriority(function<void()> _func)
 	m_Funclist->push_front(_func);
 }
 
+
+
 function<void()> CJopList::GetJobAndDequeue()
 {
 	function<void()> tmpfunc;
@@ -36,4 +39,7 @@ bool CJopList::Empty()
 {
 	return m_Funclist->empty();
 }
+
+
+
 

@@ -19,6 +19,9 @@
     <Filter Include="01.ThreadPool">
       <UniqueIdentifier>{064465a6-daf6-4d8e-a35a-03b5fa068fad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99.Template">
+      <UniqueIdentifier>{774807f8-c488-4ab1-a724-5cb26776c953}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -39,12 +42,12 @@
     <ClInclude Include="..\Headers\CJopList.h">
       <Filter>01.ThreadPool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Headers\Template.h">
+      <Filter>99.Template</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\SystemAnalizer\SystemAnalizer.cpp">
