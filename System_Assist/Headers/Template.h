@@ -14,6 +14,7 @@ public:
 		atexit(Destroy);
 		return m_pInstance;
 	}
+
 private:
 	static void Destroy()
 	{

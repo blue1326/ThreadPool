@@ -13,6 +13,8 @@ namespace ThreadPool
 		CThreadHolder(size_t _numWorkers);//customized Workers count
 		CThreadHolder(); //Auto Setting Workers ex)thread count = ( processor count * 2 ) + 1
 		virtual ~CThreadHolder();
+
+
 	public:
 		enum JOBLISTFLAG
 		{
@@ -43,6 +45,8 @@ namespace ThreadPool
 
 		void SetIndependentWorkers(unsigned int _NumWorkers);
 
+	public:
+		void Release();
 	private:
 		unique_ptr<SystemAnalizer> m_MA;
 	private:

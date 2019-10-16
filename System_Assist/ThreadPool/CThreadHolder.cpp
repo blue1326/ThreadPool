@@ -191,3 +191,17 @@ void ThreadPool::CThreadHolder::SetAwakeModeIndep(AWAKEMODE _mode)
 	}
 	m_MainCv->notify_all();
 }
+
+void ThreadPool::CThreadHolder::Release()
+{
+	for (auto &worker : m_WorkerList)
+	{
+		worker->Release();
+	}
+	m_MainCv->notify_all();
+	for (auto &worker : m_IndependentWorkerList)
+	{
+		worker->Release();
+	}
+	m_IndepCv->notify_all();
+}

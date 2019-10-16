@@ -136,3 +136,10 @@ void ThreadPool::CWorker::SetAwakeMode(AWAKEMODE _mode)
 	m_mode = _mode;
 }
 
+void ThreadPool::CWorker::Release()
+{
+	isRunning = false;
+	if (m_WorkerThread != nullptr)
+		m_WorkerThread->join();
+}
+

@@ -50,6 +50,7 @@ namespace ThreadPool
 
 		bool WorkingOn();
 		void SetAwakeMode(AWAKEMODE _mode);
+		void Release();
 	};
 
 }

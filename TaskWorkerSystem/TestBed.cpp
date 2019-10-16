@@ -41,6 +41,8 @@ void opentest()
 int main()
 {
 	cout << "Begin Program" << endl;
+
+	//shared_ptr<CThreadHolder> worker = make_shared<CThreadHolder>();
 	shared_ptr<CThreadHolder> worker = CThreadHolder::GetInstance();
 	cout << "WorkerSystem Start" << endl;
 	worker->SetIndependentWorkers(2);//make independent workers;
@@ -51,7 +53,11 @@ int main()
 		string tmp;
 		cin >> tmp;
 		if (tmp == "exit")
+		{
+			worker->Release();
 			break;
+		}
+		
 		if (tmp == "awake")
 			worker->Awake_all();
 		if (tmp == "auto")
