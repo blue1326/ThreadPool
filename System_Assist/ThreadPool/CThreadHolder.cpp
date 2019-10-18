@@ -34,8 +34,8 @@ void CThreadHolder::Initialize()
 	m_modeMain = CThreadHolder::AWAKE_AUTOAWAKE;
 	m_MainMtx = make_shared<mutex>();
 	m_MainCv = make_shared<condition_variable>();
-	m_JobList[JOB_MAIN] = make_shared<CJopList>();
-		
+	m_TaskList[TASK_MAIN] = make_shared<CTaskList>();
+	m_MainAtmc_ActiveCount = make_shared<atomic<int>>();
 	if ((StateFlag&AUTO) == AUTO)
 	{
 		m_NumWorkers = (m_MA->GetSystemInfo()->dwNumberOfProcessors * 2) + 1;
@@ -47,7 +47,8 @@ void CThreadHolder::Initialize()
 		worker->initialize();
 		worker->SetConditionVariable(m_MainCv);
 		worker->SetMutex(m_MainMtx);
-		worker->SetJobList(m_JobList[JOB_MAIN]);
+		worker->SetJobList(m_TaskList[TASK_MAIN]);
+		worker->SetAtomicVariable(m_MainAtmc_ActiveCount);
 		worker->Activate();
 		m_WorkerList.push_back(move(worker));
 
@@ -94,7 +95,8 @@ void CThreadHolder::SetIndependentWorkers(unsigned int _NumWorkers)
 	m_modeIndep = CThreadHolder::AWAKE_AUTOAWAKE;
 	m_IndepMutex = make_shared<mutex>();
 	m_IndepCv = make_shared<condition_variable>();
-	m_JobList[JOB_INDEP] = make_shared<CJopList>();
+	m_TaskList[TASK_INDEP] = make_shared<CTaskList>();
+	m_IndepAtmc_ActiveCount = make_shared<atomic<int>>();
 	WORKERLIST::iterator iter = m_WorkerList.begin();
 	WORKERLIST::iterator iter_end = m_WorkerList.end();
 	int icnt = 0;
@@ -107,7 +109,8 @@ void CThreadHolder::SetIndependentWorkers(unsigned int _NumWorkers)
 				(*iter)->initialize();
 				(*iter)->SetConditionVariable(m_IndepCv);
 				(*iter)->SetMutex(m_IndepMutex);
-				(*iter)->SetJobList(m_JobList[JOB_INDEP]);
+				(*iter)->SetJobList(m_TaskList[TASK_INDEP]);
+				(*iter)->SetAtomicVariable(m_IndepAtmc_ActiveCount);
 				(*iter)->Activate();
 				m_IndependentWorkerList.push_back(move(*iter));
 				iter = m_WorkerList.erase(iter);
@@ -128,14 +131,14 @@ void CThreadHolder::SetIndependentWorkers(unsigned int _NumWorkers)
 	
 }
 
-void CThreadHolder::SetTask(JOBLISTFLAG targetJlist, function<void()> _func)
+void CThreadHolder::SetTask(TASKLISTFLAG targetJlist, function<void()> _func)
 {
-	if (m_JobList[targetJlist] == nullptr)
+	if (m_TaskList[targetJlist] == nullptr)
 	{
 		cout << "Joblist is not allocate" << endl;
 		return;
 	}
-	m_JobList[targetJlist]->Enqueue(_func);
+	m_TaskList[targetJlist]->Enqueue(_func);
 }
 
 void CThreadHolder::SetAwakeMode(AWAKEMODE _mode)
@@ -204,4 +207,40 @@ void ThreadPool::CThreadHolder::Release()
 		worker->Release();
 	}
 	m_IndepCv->notify_all();
+}
+
+int ThreadPool::CThreadHolder::GetRunningThreadCnt(TASKLISTFLAG _targetJlist)
+{
+	switch (_targetJlist)
+	{
+	case ThreadPool::CThreadHolder::TASK_MAIN:
+		return *m_MainAtmc_ActiveCount;
+		break;
+	case ThreadPool::CThreadHolder::TASK_INDEP:
+		return *m_IndepAtmc_ActiveCount;
+		break;
+	case ThreadPool::CThreadHolder::TASK_END:
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+int ThreadPool::CThreadHolder::GetTaskCnt(TASKLISTFLAG _targetJlist)
+{
+	switch (_targetJlist)
+	{
+	case ThreadPool::CThreadHolder::TASK_MAIN:
+		return m_TaskList[TASK_MAIN]->GetTaskCnt();
+		
+	case ThreadPool::CThreadHolder::TASK_INDEP:
+		return m_TaskList[TASK_INDEP]->GetTaskCnt();
+		
+	case ThreadPool::CThreadHolder::TASK_END:
+		break;
+	default:
+		break;
+	}
+	return 0;
 }

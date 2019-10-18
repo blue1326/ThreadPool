@@ -2,32 +2,32 @@
 #include "CJopList.h"
 
 using namespace ThreadPool;
-CJopList::CJopList()
+CTaskList::CTaskList()
 {
 	m_Funclist = make_shared<list<function<void()>>>();
 	
 }
 
 
-CJopList::~CJopList()
+CTaskList::~CTaskList()
 {
 	m_Funclist->clear();
 }
 
-void CJopList::Enqueue(function<void()> _func)
+void CTaskList::Enqueue(function<void()> _func)
 {
 	m_Funclist->push_back(_func);
 	
 }
 
-void CJopList::EnqueuePriority(function<void()> _func)
+void CTaskList::EnqueuePriority(function<void()> _func)
 {
 	m_Funclist->push_front(_func);
 }
 
 
 
-function<void()> CJopList::GetJobAndDequeue()
+function<void()> CTaskList::GetJobAndDequeue()
 {
 	function<void()> tmpfunc;
 	tmpfunc = m_Funclist->front();
@@ -35,11 +35,15 @@ function<void()> CJopList::GetJobAndDequeue()
 	return tmpfunc;
 }
 
-bool CJopList::Empty()
+bool CTaskList::Empty()
 {
 	return m_Funclist->empty();
 }
 
+int ThreadPool::CTaskList::GetTaskCnt()
+{
+	return m_Funclist->size();
+}
 
 
 

@@ -54,7 +54,7 @@ void CWorker::SetMutex(shared_ptr <mutex> _mtx)
 	m_mtx = _mtx;
 }
 
-void CWorker::SetJobList(shared_ptr<CJopList> _joblist)
+void CWorker::SetJobList(shared_ptr<CTaskList> _joblist)
 {
 	m_Joblist = _joblist;
 }
@@ -75,11 +75,13 @@ void CWorker::BasicWorking()
 			m_uLock->unlock();
 		}
 
-		//m_atmI_ActiveCount->fetch_add(1);
+		
 		if (m_Job != nullptr)
 		{
+			m_atmc_ActiveCount->fetch_add(1);
 			m_Job();
 			m_Job = nullptr;
+			m_atmc_ActiveCount->fetch_sub(1);
 		}
 		if (m_Joblist->Empty())
 		{
@@ -100,7 +102,7 @@ void CWorker::BasicWorking()
 			//m_cv->wait(*m_uLock.get());
 			m_uLock->unlock();
 		}
-		//m_atmI_ActiveCount->fetch_sub(1);
+		
 		
 	}
 	cout << "thread stop!" << endl;

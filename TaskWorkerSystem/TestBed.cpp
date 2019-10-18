@@ -3,6 +3,7 @@
 #pragma comment(lib,"../dll/System_Assist.lib")
 #include <Windows.h>
 #include "CThreadHolder.h"
+
 using namespace ThreadPool;
 //#include "CThreadHolder.h"
 //using namespace std;
@@ -68,20 +69,20 @@ int main()
 			worker->SetAwakeMode(CThreadHolder::AWAKE_MANUALAWAKE);
 
 		if (tmp == "independent")
-			worker->SetTask(CThreadHolder::JOB_INDEP, independentTest);
+			worker->SetTask(CThreadHolder::TASK_INDEP, independentTest);
 
 		if (tmp == "member")
 		{
 			int x = 0;
 			for (int i = 0; i < 100; i++)
 			{
-				worker->SetTask(CThreadHolder::JOB_MAIN, bind(&testclass::test,tst.get()));
+				worker->SetTask(CThreadHolder::TASK_MAIN, bind(&testclass::test,tst.get()));
 				
 			}
 		}
 		else
 		{
-			worker->SetTask(CThreadHolder::JOB_MAIN, bind([](string _str) {cout << "type : "<<_str << endl; },tmp));
+			worker->SetTask(CThreadHolder::TASK_MAIN, bind([](string _str) {cout << "type : "<<_str << endl; },tmp));
 		}
 	}
 	cout << "End Program" << endl;
