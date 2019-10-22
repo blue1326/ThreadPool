@@ -6,6 +6,8 @@
 //////////////////////////////////////////////////////////////////////////
 using namespace ThreadPool;
 
+
+
 CThreadHolder::CThreadHolder(size_t _numWorkers)
 	: StateFlag(CUSTOM),
 	m_NumWorkers(_numWorkers)
@@ -24,7 +26,7 @@ CThreadHolder::CThreadHolder()
 
 CThreadHolder::~CThreadHolder()
 {
-
+	Release();
 }
 
 
@@ -201,12 +203,14 @@ void ThreadPool::CThreadHolder::Release()
 	{
 		worker->Release();
 	}
-	m_MainCv->notify_all();
+	if (m_MainCv != nullptr)
+		m_MainCv->notify_all();
 	for (auto &worker : m_IndependentWorkerList)
 	{
 		worker->Release();
 	}
-	m_IndepCv->notify_all();
+	if(m_IndepCv != nullptr)
+		m_IndepCv->notify_all();
 }
 
 int ThreadPool::CThreadHolder::GetRunningThreadCnt(TASKLISTFLAG _targetJlist)

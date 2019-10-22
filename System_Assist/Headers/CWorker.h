@@ -1,4 +1,8 @@
-#pragma once
+#ifndef SystemAssist_CWorker_h__
+#define SystemAssist_CWorker_h__
+
+
+
 #include "CJopList.h"
 namespace ThreadPool
 {
@@ -33,9 +37,7 @@ namespace ThreadPool
 	private:
 		shared_ptr<condition_variable> m_cv;
 		shared_ptr <mutex> m_mtx;
-
 		shared_ptr < unique_lock<mutex>> m_uLock;
-
 		shared_ptr<atomic<int>> m_atmc_ActiveCount;
 			
 	public:
@@ -54,3 +56,4 @@ namespace ThreadPool
 	};
 
 }
+#endif // CWorker_h__

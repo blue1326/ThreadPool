@@ -17,7 +17,12 @@ CWorker::~CWorker()
 {
 	m_Job = nullptr;
 	isRunning = false;
-	m_WorkerThread->join();
+	m_uLock->release();
+	m_uLock.reset();
+	m_cv.reset();
+	m_mtx.reset();
+	if(m_WorkerThread->joinable())
+		m_WorkerThread->join();;
 }
 
 

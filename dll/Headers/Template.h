@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 template<typename T>
-class CSingleton
+class CSingleton_SPtr
 {
 private:
 	static std::shared_ptr<T> m_pInstance;
@@ -22,5 +22,5 @@ private:
 	}
 
 };
-template<typename T> std::shared_ptr<T> CSingleton<T>::m_pInstance = nullptr;
-template<typename T> std::once_flag CSingleton<T>::m_onceFlag;
+template<typename T> std::shared_ptr<T> CSingleton_SPtr<T>::m_pInstance = nullptr;
+template<typename T> std::once_flag CSingleton_SPtr<T>::m_onceFlag;

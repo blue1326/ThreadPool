@@ -1,4 +1,8 @@
-#pragma once
+#ifndef SystemAssist_CJopList_h__
+#define SystemAssist_CJopList_h__
+
+
+
 namespace ThreadPool
 {
 	class __declspec(dllexport) CTaskList
@@ -19,3 +23,4 @@ namespace ThreadPool
 	};
 
 }
+#endif // CJopList_h__
