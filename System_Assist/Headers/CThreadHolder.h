@@ -13,27 +13,13 @@ namespace ThreadPool
 	class __declspec(dllexport) CThreadHolder : public  CSingleton_SPtr<CThreadHolder>
 
 	{
-		/*private:
-			static std::shared_ptr<CThreadHolder> m_SingletonInstance;
-			static std::once_flag m_Singletonflag;*/
+	
 	public:
 		CThreadHolder(size_t _numWorkers);//customized Workers count
 		CThreadHolder(); //Auto Setting Workers ex)thread count = ( processor count * 2 ) + 1
 		virtual ~CThreadHolder();
 
-/*
-		static shared_ptr<CThreadHolder> GetInstance()
-		{
-			call_once(m_Singletonflag, [] {m_SingletonInstance.reset(new CThreadHolder);
-			});
-			atexit(Destroy);
-			return m_SingletonInstance;
-		}
-	private:
-		static void Destroy()
-		{
-			m_SingletonInstance.reset();
-		}*/
+
 	public:
 		enum TASKLISTFLAG
 		{
@@ -99,9 +85,6 @@ namespace ThreadPool
 
 		unsigned short StateFlag;
 	};
-	/*template<typename T> std::shared_ptr<T> CSingleton<T>::m_pInstance = nullptr;
-	template<typename T> std::once_flag CSingleton<T>::m_onceFlag;
-*/
-	 
+
 }
 #endif // CThreadHolder_h__
